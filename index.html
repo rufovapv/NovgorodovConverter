@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Иконка для iPhone и Android -->
+<link rel="apple-touch-icon" href="C:\Users\Пользователь\Downloads\icon.png">
+<link rel="icon" type="image/png" href="C:\Users\Пользователь\Downloads\icon.png">
+<meta name="theme-color" content="#4CAF50">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Конвертер на алфавит С.А.Новгородова</title>
+<style>
+* { box-sizing: border-box; margin:0; padding:0; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #84c961, #f1f5d6); /* мягкий зелёный фон страницы */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background-color: hsla(54, 100%, 50%, 0.816); /* светлый зелёный фон конвертера */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+textarea {
+    width: 100%;
+    height: 120px;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: none;
+    margin-bottom: 12px;
+    transition: 0.3s;
+}
+
+textarea:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 6px rgba(74,144,226,0.3);
+    outline: none;
+}
+
+button {
+    padding: 12px 18px;
+    font-size: 16px;
+    margin: 6px 0;
+    width: 100%;
+    background: linear-gradient(90deg, #4a90e2, #357ab7);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover { background: linear-gradient(90deg, #357ab7, #4a90e2); }
+button:active { transform: scale(0.98); }
+
+#output {
+    margin-top: 15px;
+    padding: 12px;
+    width: 100%;
+    min-height: 60px;
+    border-radius: 8px;
+    background-color: #f7fff7; /* светло-зелёный блок результата */
+    border: 1px solid #ddd;
+    font-size: 16px;
+    color: #111;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+@media (max-width: 480px) {
+    h2 { font-size: 1.3em; }
+    textarea { height: 100px; font-size: 15px; }
+    button { font-size: 15px; padding: 10px; }
+    #output { font-size: 15px; padding: 10px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>Конвертер на алфавит С.А.Новгородова</h2>
+
+<textarea id="input" placeholder="Введите текст"></textarea>
+
+<button onclick="toNovgorodov()">Перевести → Новгородова</button>
+<button onclick="toCyrillic()">Перевести → Кириллица</button>
+<button onclick="copyBack()">Переместить результат в поле</button>
+<button onclick="clearAll()">Очистить всё</button>
+
+<div id="output"></div>
+</div>
+
+<script>
+// Таблицы соответствия
+let mapToNov = {
+    "а":"a","б":"b","в":"v","г":"g","д":"d","е":"e","ж":"j","з":"z",
+    "и":"i","й":"j","к":"k","л":"l","м":"m","н":"n","ҥ":"ŋ",
+    "о":"o","ө":"ø","п":"p","р":"r","с":"s","т":"t","у":"u",
+    "ү":"y","х":"q","ч":"c","ҕ":"ʃ","ы":"w","э":"e","ф":"f"
+};
+
+let mapToCyr = {};
+for (let key in mapToNov) {
+    let val = mapToNov[key];
+    mapToCyr[val] = key;
+}
+
+let vowels = ["а","е","и","о","у","ү","ө","ы","э"];
+
+// Перевод в Новгородов
+function toNovgorodov() {
+    let textarea = document.getElementById("input");
+    textarea.blur();
+    let text = textarea.value.toLowerCase();
+    let result = "";
+    for (let i = 0; i < text.length; i++) {
+        let char = text[i];
+        let nextChar = text[i+1];
+        if (vowels.includes(char) && char === nextChar) {
+            result += mapToNov[char] + ":";
+            i++;
+        } else {
+            result += mapToNov[char] || char;
+        }
+    }
+    document.getElementById("output").innerText = result;
+}
+
+// Перевод обратно в кириллицу
+function toCyrillic() {
+    let textarea = document.getElementById("input");
+    textarea.blur();
+    let text = textarea.value.toLowerCase();
+    let result = "";
+    for (let i = 0; i < text.length; i++) {
+        let char = text[i];
+        let nextChar = text[i+1];
+        if (nextChar === ":") {
+            result += mapToCyr[char] + mapToCyr[char];
+            i++;
+        } else {
+            result += mapToCyr[char] || char;
+        }
+    }
+    document.getElementById("output").innerText = result;
+}
+
+// Копирование результата обратно в поле ввода
+function copyBack() {
+    let text = document.getElementById("output").innerText;
+    document.getElementById("input").value = text;
+    document.getElementById("output").innerText = "";
+}
+
+// Новая функция очистки
+function clearAll() {
+    document.getElementById("input").value = "";
+    document.getElementById("output").innerText = "";
+}
+</script>
+</body>
+</html>
