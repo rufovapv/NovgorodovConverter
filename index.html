@@ -133,13 +133,13 @@ let mapToNov = {
     "и":"i","й":"j","к":"k","л":"l","м":"m","н":"n","ҥ":"ŋ",
     "о":"ɔ","ө":"ꭢ","п":"p","р":"r","с":"s","т":"t","у":"u",
     "ү":"y","х":"q","ч":"c","ҕ":"ʃ","ы":"ɯ","э":"e","ф":"f","ль":"ʎ","ыа":"wa","дь":"з",
-    "иэ":"iэ","уо":"uo","үө":"yo" 
+    "иэ":"iе","уо":"uo","үө":"yo" 
 };
 
 let mapToCyr = {};
 for (let key in mapToNov) {
     let val = mapToNov[key];
-    mapToCyr[val] = key;
+    mapToCyr[val] = key;""
 }
 
 let vowels = ["а","е","и","о","у","ү","ө","ы","э"];
@@ -181,21 +181,24 @@ function toNovgorodov() {
 
 // Перевод обратно в кириллицу
 function toCyrillic() {
-    let textarea = document.getElementById("input");
-    textarea.blur();
-    let text = textarea.value.toLowerCase();
+    let text = document.getElementById("input").value.toLowerCase();
     let result = "";
+
     for (let i = 0; i < text.length; i++) {
-        let char = text[i];
-        let nextChar = text[i+1];
-        if (nextChar === ":") {
-            result += mapToCyr[char] + mapToCyr[char];
-            i++;
-        } else {
-            result += mapToCyr[char] || char;
+
+        let two = text[i] + text[i + 1];
+
+        // сначала проверяем 2 буквы
+        if (mapToCyr[two]) {
+            result += mapToCyr[two];
+            i++; // пропускаем вторую букву
+        } 
+        else {
+            result += mapToCyr[text[i]] || text[i];
         }
     }
-    document.getElementById("output").innerText = result;
+
+    return result;
 }
 
 // Копирование результата обратно в поле ввода
