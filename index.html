@@ -181,24 +181,21 @@ function toNovgorodov() {
 
 // Перевод обратно в кириллицу
 function toCyrillic() {
-    let text = document.getElementById("input").value.toLowerCase();
+    let textarea = document.getElementById("input");
+    textarea.blur();
+    let text = textarea.value.toLowerCase();
     let result = "";
-
     for (let i = 0; i < text.length; i++) {
-
-        let two = text[i] + text[i + 1];
-
-        // сначала проверяем 2 буквы
-        if (mapToCyr[two]) {
-            result += mapToCyr[two];
-            i++; // пропускаем вторую букву
-        } 
-        else {
-            result += mapToCyr[text[i]] || text[i];
+        let char = text[i];
+        let nextChar = text[i+1];
+        if (nextChar === ":") {
+            result += mapToCyr[char] + mapToCyr[char];
+            i++;
+        } else {
+            result += mapToCyr[char] || char;
         }
     }
-
-    return result;
+    document.getElementById("output").innerText = result;
 }
 
 // Копирование результата обратно в поле ввода
