@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="icon" type="image/png" sizes="192x192" href="icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
     <!-- Иконка для iPhone и Android -->
 <link rel="apple-touch-icon" href="C:\Users\Пользователь\Downloads\icon.png">
 <link rel="icon" type="image/png" href="C:\Users\Пользователь\Downloads\icon.png">
@@ -98,6 +100,9 @@ button:active { transform: scale(0.98); }
 <body>
 <div class="container">
 <h2>Конвертер на алфавит С.А.Новгородова</h2>
+<button onclick="showAlphabet()" style="width:auto;padding:8px 12px;margin-bottom:10px;">
+📖  Справочник алфавита
+</button>
 
 <textarea id="input" placeholder="Введите текст"></textarea>
 
@@ -107,15 +112,30 @@ button:active { transform: scale(0.98); }
 <button onclick="clearAll()">Очистить всё</button>
 
 <div id="output"></div>
+<div id="alphabet" style="display:none; margin-top:15px; padding:10px; background:#ffffff; border-radius:8px; border:1px solid #ccc;">
+
+<b>Алфавит С.А. Новгородова</b><br><br>
+
+<img src="alphabet.png" style="width:100%; border-radius:8px;">
+
 </div>
 
 <script>
+    function showAlphabet() {
+    let block = document.getElementById("alphabet");
+    if (block.style.display === "none") {
+        block.style.display = "block";
+    } else {
+        block.style.display = "none";
+    }
+}
 // Таблицы соответствия
 let mapToNov = {
     "а":"a","б":"b","в":"v","г":"g","д":"d","е":"e","ж":"j","з":"z",
     "и":"i","й":"j","к":"k","л":"l","м":"m","н":"n","ҥ":"ŋ",
-    "о":"o","ө":"ø","п":"p","р":"r","с":"s","т":"t","у":"u",
-    "ү":"y","х":"q","ч":"c","ҕ":"ʃ","ы":"w","э":"e","ф":"f"
+    "о":"ɔ","ө":"ꭢ","п":"p","р":"r","с":"s","т":"t","у":"u",
+    "ү":"y","х":"q","ч":"c","ҕ":"ʃ","ы":"ɯ","э":"e","ф":"f","ль":"ʎ","ыа":"ꭠ","дь":"з",
+    "иэ":"ꭡ","уо":"ꭣ","үө":"w" 
 };
 
 let mapToCyr = {};
@@ -132,16 +152,32 @@ function toNovgorodov() {
     textarea.blur();
     let text = textarea.value.toLowerCase();
     let result = "";
+
     for (let i = 0; i < text.length; i++) {
+
+        let twoChars = text[i] + text[i+1];
         let char = text[i];
         let nextChar = text[i+1];
-        if (vowels.includes(char) && char === nextChar) {
+
+        // сначала проверяем двойные буквы
+        if (mapToNov[twoChars]) {
+            result += mapToNov[twoChars];
+            i++; 
+        }
+
+        // проверка долгих гласных
+        else if (vowels.includes(char) && char === nextChar) {
             result += mapToNov[char] + ":";
             i++;
-        } else {
+        }
+
+        // обычная буква
+        else {
             result += mapToNov[char] || char;
         }
+
     }
+
     document.getElementById("output").innerText = result;
 }
 
